@@ -15,8 +15,10 @@ module Jekyll
         @partials = ['cover','header_html','footer_html']
 
         self.process(@name)
+        # Adding code from https://github.com/zhulik/jekyll-pdf/commit/631496a81a59f877e7a8834d02741996e028209a
+        @page = page
         self.data = page.data.clone
-        self.content = page.content.clone
+#        self.content = page.content.clone
 
         # Set layout to the PDF layout
         self.data['layout'] = layout
@@ -58,7 +60,10 @@ module Jekyll
       # Write the PDF file
       # todo: remove pdfkit dependency
       def write(dest_prefix, dest_suffix = nil)
-        self.render(@site.layouts, @site.site_payload) if self.output == nil
+        # self.render(@site.layouts, @site.site_payload) if self.output == nil
+        # Commented above and added code from https://github.com/zhulik/jekyll-pdf/commit/631496a81a59f877e7a8834d02741996e028209a
+        @page.render(@site.layouts, @site.site_payload) if output.nil?
+        self.output = @page.output
 
         path = File.join(dest_prefix, CGI.unescape(self.url))
         dest = File.dirname(path)
